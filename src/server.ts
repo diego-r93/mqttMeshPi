@@ -1,18 +1,41 @@
-import express from 'express'
+import dotenv from 'dotenv';
 
-import { Router, Request, Response } from 'express';
+dotenv.config();
+
+import express, { Router, Request, Response } from 'express';
 
 const app = express();
 
-const route = Router()
+import cors from 'cors';
+import path from 'path';
+import setupMqttRoutes from './routes/mqtt-routes';
 
-app.use(express.json())
+const corsOptions = {
+  origin: "http://192.168.1.32"
+};
+app.use(cors(corsOptions));
+
+const host: string = process.env.HOST || '192.168.1.10';
+const port: number = Number(process.env.PORT) || 3333;
+
+const route = Router();
+
+// Parse requests of content-type - application/json
+app.use(express.json());
+
+// Parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
 
 route.get('/', (req: Request, res: Response) => {
   res.json({ message: 'hello world with Typescript' })
 })
 
-app.use(route)
+app.use(route);
 
+// MQTT
+setupMqttRoutes(app)
 
-app.listen(3333, () => 'server running on port 3333')
+// Listen the server
+app.listen(port, host, () => {
+  console.log('Server listening on ' + host + ':' + port)
+})
