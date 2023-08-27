@@ -8,15 +8,16 @@ const app = express();
 
 import cors from 'cors';
 import path from 'path';
+import setupUsersRoutes from './routes/users-routes';
 import setupMqttRoutes from './routes/mqtt-routes';
-
-const corsOptions = {
-  origin: "http://192.168.1.32"
-};
-app.use(cors(corsOptions));
 
 const host: string = process.env.HOST || '192.168.1.10';
 const port: number = Number(process.env.PORT) || 3333;
+
+const corsOptions = {
+  origin: `http://${host}:3000`
+};
+app.use(cors(corsOptions));
 
 const route = Router();
 
@@ -31,6 +32,9 @@ route.get('/', (req: Request, res: Response) => {
 })
 
 app.use(route);
+
+// Users
+setupUsersRoutes(app)
 
 // MQTT
 setupMqttRoutes(app)

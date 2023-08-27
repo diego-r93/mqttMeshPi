@@ -1,13 +1,21 @@
-import { Router, Request, Response } from 'express';
+import { Express, Router } from 'express';
+import * as users from '../database/sqlite/controllers/user.controllers';
 
-const router = Router();
+const userRoutes = (app: Express) => {
+    const router = Router();
 
-router.get('/', (req: Request, res: Response) => {
-    res.send('Lista de usuários');
-});
+    // router.get('/', users.findAll);
 
-router.get('/:id', (req: Request, res: Response) => {
-    res.send(`Detalhes do usuário com ID: ${req.params.id}`);
-});
+    router.post('/', users.createUser);
 
-export default router;
+    router.post('/login', users.loginUser);
+
+    // router.get("/:id", users.findOne);
+
+    // router.put("/:id", verifyToken, users.update);
+
+    app.use("/api/users", router);
+
+};
+
+export default userRoutes;
