@@ -31,6 +31,17 @@ route.get('/', (req: Request, res: Response) => {
   res.json({ message: 'hello world with Typescript' })
 })
 
+// Serve Vue.js as SPA in production
+app.use(express.static('public'))
+
+app.get('/', (req, res, next) => {
+  res.sendFile(path.resolve(__dirname, './public/index.html'))
+})
+
+// app.get('*', (req, res, next) => {
+//   res.sendFile(path.resolve(__dirname, './public/index.html'))
+// })
+
 app.use(route);
 
 // Users
